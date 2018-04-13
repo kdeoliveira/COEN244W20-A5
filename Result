@@ -1,0 +1,23 @@
+Answer found:
+
+for (const auto& item : json1["items"]["item"])
+{
+    // check if item["batters"]["batter"] exists
+    if (item.find("batters") != item.end() and
+        item["batters"].find("batter") != item["batters"].end())
+    {
+        for (const auto& batter : item["batters"]["batter"])
+        {
+            std::cout << batter["id"] << ", " << batter["type"] << std::endl;
+        }
+    }
+    
+    // check if item["topping"] exists
+    if (item.find("topping") != item.end())
+    {
+        for (const auto& batter : item["topping"])
+        {
+            std::cout << batter["id"] << ", " << batter["type"] << std::endl;
+        }
+    }
+}
