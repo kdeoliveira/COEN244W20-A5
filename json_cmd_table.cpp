@@ -64,11 +64,12 @@ int main(int argc, char *argv[]) {
 //Function definitions
 
 
-
+//Overloaded function. Passes the filename to the getfile function. Calls the other buildTable function
 void buildTable(string filename, string outfile, string outSort) {
 	buildTable(getjFile(filename), outfile, outSort);
 }
 
+//Builds the table which is output in the output file
 void buildTable(json jfile, string outfile, string outSort) {
 
 	//Vector holds sorted json objects
@@ -79,68 +80,88 @@ void buildTable(json jfile, string outfile, string outSort) {
 
 	if (out.is_open()) {
 
+
+	//Each sort type has an output loop such that they are well formatted
 		if (outSort == "id") {
 			out << setw(72) << "|  id  |  type  |  name  |     batter     |           topping          |"<< endl;
 			out << setw(72) << "------------------------------------------------------------------------"<< endl;
+
+			for (unsigned int it = 0; it < jsonVector.size(); it++) {
+				out << "| " << setw(4) << left << jsonVector[it][0] << " |"
+					<< setw(8) << right << jsonVector[it][1] << "|"
+					<< setw(8) << right << jsonVector[it][2] << "|"
+					<< setw(16) << right << jsonVector[it][3] << "|"
+					<< setw(28) << right << jsonVector[it][4] << "|" << endl
+					<< setw(72) << "------------------------------------------------------------------------" << endl;
+			}
 		}
 
 		else if (outSort == "type") {
 			out << setw(72) << "|  type  |  id  |  name  |     batter     |           topping          |"<< endl;
 			out << setw(72) << "------------------------------------------------------------------------"<< endl;
+
+			for (unsigned int it = 0; it < jsonVector.size(); it++) {
+				out << "|" << setw(8) << right << jsonVector[it][0]
+					<< "| " << setw(4) << left << jsonVector[it][1] << " |"
+					<< setw(8) << right << jsonVector[it][2] << "|"
+					<< setw(16) << right << jsonVector[it][3] << "|"
+					<< setw(28) << right << jsonVector[it][4] << "|" << endl
+					<< setw(72) << "------------------------------------------------------------------------" << endl;
+			}
 		}
-		//TODO Create table header depending on type input
 
 		else if (outSort == "name") {
 			out << setw(72) << "|  name  |  type  |  id  |     batter     |           topping          |"<< endl;
 			out << setw(72) << "------------------------------------------------------------------------"<< endl;
+
+			for (unsigned int it = 0; it < jsonVector.size(); it++) {
+				out << "|" << setw(8) << right << jsonVector[it][0] << "|"
+					<< setw(8) << right << jsonVector[it][1]
+					<< "| " << setw(4) << left << jsonVector[it][2] << " |"
+					<< setw(16) << right << jsonVector[it][3] << "|"
+					<< setw(28) << right << jsonVector[it][4] << "|" << endl
+					<< setw(72) << "------------------------------------------------------------------------" << endl;
+			}
 		}
-		//TODO
 
 		else if (outSort == "batter") {
 			out << setw(72) << "|     batter     |  type  |  name  |  id  |           topping          |"<< endl;
 			out << setw(72) << "------------------------------------------------------------------------"<< endl;
+
+			for (unsigned int it = 0; it < jsonVector.size(); it++) {
+				out << "|" << setw(16) << right << jsonVector[it][0] << "|"
+					<< setw(8) << right << jsonVector[it][1] << "|"
+					<< setw(8) << right << jsonVector[it][2]
+					<< "| " << setw(4) << left << jsonVector[it][3] << " |"
+					<< setw(28) << right << jsonVector[it][4] << "|" << endl
+					<< setw(72) << "------------------------------------------------------------------------" << endl;
+			}
 		}
-		//TODO
 
 		else if (outSort == "topping") {
 			out << setw(72) << "|           topping          |  type  |  name  |     batter     |  id  |"<< endl;
 			out << setw(72) << "------------------------------------------------------------------------"<< endl;
+
+			for (unsigned int it = 0; it < jsonVector.size(); it++) {
+				out << "|" << setw(28) << right << jsonVector[it][0] << "|"
+					<< setw(8) << right << jsonVector[it][1] << "|"
+					<< setw(8) << right << jsonVector[it][2] << "|"
+					<< setw(16) << right << jsonVector[it][3]
+					<< "| " << setw(4) << left << jsonVector[it][1] << " |" << endl
+					<< setw(72) << "------------------------------------------------------------------------" << endl;
+			}
 		}
-		//TODO
 
 		else {
 			ofstream err("Error.txt");
 			err << "Wrong sorting type input argument in the command line";
 			exit(1);
 		}
-
-		for (unsigned int it = 0; it < jsonVector.size(); it++) {
-			out<< "| " << jsonVector[it][0] << " | "
-			   << jsonVector[it][1] << " | "
-			   << jsonVector[it][2] << " | "
-			   << jsonVector[it][3] << " | "
-			   << jsonVector[it][4] << " |" << endl
-			   << setw(72) << "------------------------------------------------------------------------" << endl;
-		}
-
-		/*for (const json &item : jfile["items"]["item"]) {
-			for (const json &batter : item["batters"]["batter"]) {
-				for (const json &topping : item["topping"]) {
-
-					out<< "|" << item["id"] << "|"
-					   << setw(9) << item["type"] << " | "
-					   << setw(9) << item["name"] << " | "
-					   << setw(17) << batter["type"] << "|"
-					   << setw(28) << topping["type"]
-					   << "|" << endl
-				       << setw(72) << "------------------------------------------------------------------------" << endl;
-				}
-			}
-		}*/
 		out.close();
 	}
 }
 
+//Gets the information from the file, puts it in a json object
 json getjFile(std::string filename) {
 
 	json jfile;
@@ -155,13 +176,24 @@ json getjFile(std::string filename) {
 
 			Sample.close();
 		}
-		else cout<< "File could not be opened" <<endl;
+		else {
+			ofstream err;
+			err.open("Error.txt");
+			err<< "Input file could not be opened" <<endl;
+			err.close();
+		}
 	}
-	else cout<< "File could not be opened" <<endl;
+	else {
+		ofstream err;
+		err.open("Error.txt");
+		err<< "Input file could not be opened" <<endl;
+		err.close();
+	}
 
 	return jfile;
 }
 
+//Gets the information in the json object, puts it in a vector
 vector<vector<string>> getVector(json jfile) {
 
 	vector<vector<string>> jsonVector;
@@ -175,8 +207,8 @@ vector<vector<string>> getVector(json jfile) {
 				jsonVector[i].push_back(item["id"]);
 				jsonVector[i].push_back(item["type"]);
 				jsonVector[i].push_back(item["name"]);
-				jsonVector[i].push_back(batter.value("type", ""));
-				jsonVector[i].push_back(topping.value("type", ""));
+				jsonVector[i].push_back(batter["type"]);
+				jsonVector[i].push_back(topping["type"]);
 				i++;
 			}
 		}
@@ -184,6 +216,7 @@ vector<vector<string>> getVector(json jfile) {
 	return jsonVector;
 }
 
+//Sorts the vector by the requested user inputed argument
 vector<vector<string>> sortByInput(vector<vector<string>> jsonVector, string arg) {
 
 	unsigned int type = 0;
@@ -220,6 +253,7 @@ vector<vector<string>> sortByInput(vector<vector<string>> jsonVector, string arg
 	return selectionSortVector(jsonVector);
 }
 
+//Sorts the vectors inside of the vector by order of smallest to biggest value of string with the selection sort algorithm
 vector<vector<string>> selectionSortVector(vector<vector<string>> jsonVector) {
 
 	unsigned int min;
@@ -238,6 +272,5 @@ vector<vector<string>> selectionSortVector(vector<vector<string>> jsonVector) {
 		jsonVector[min] = tempV;
 
 	}
-
 	return jsonVector;
 }
