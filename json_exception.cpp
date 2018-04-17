@@ -1,5 +1,8 @@
 /*
  * json_exception.h
+ *
+ *  Created on: Apr 16, 2018
+ *      Author: kevindeoliveira
  */
 
 #ifndef JSON_EXCEPTION_H_
@@ -11,7 +14,6 @@
 #include <exception>
 #include <ctime>
 #include <string>
-
 
 class JsonLog{
 public:
@@ -33,7 +35,7 @@ public:
 		now = time(0);
 		ltm = localtime(&now);
 
-		error_log.open("Error.txt", std::ofstream::app);
+		error_log.open("JSON_log.txt", std::ofstream::app);
 		error_txt = new char[strlen(eT)];
 		strcpy(error_txt, eT);
 		error_log<<this->getTime()<<' '<<eT<<'\n';
@@ -46,7 +48,7 @@ public:
 	std::string getTime(){
 		std::stringstream ss;
 		std::string time;
-		ss<<ltm->tm_mday<<"/"<<1 + ltm->tm_mon<<"/"<<1900+ltm->tm_year<<"-"<<1 + ltm->tm_hour<<":"<<1 + ltm->tm_min<<":"<<1 + ltm->tm_sec<<":";
+		ss<<ltm->tm_mday<<"/"<<1 + ltm->tm_mon<<"/"<<1900+ltm->tm_year<<"-"<<ltm->tm_hour<<":"<<ltm->tm_min<<":"<<ltm->tm_sec<<":";
 		ss>>time;
 		return time;
 	}
@@ -83,3 +85,11 @@ public:
 
 
 #endif /* JSON_EXCEPTION_H_ */
+
+	//namespace JException
+namespace JException{
+	using FilePathException = JsonException::FilePathException;
+	using InvalidArgumentsException = JsonException::InvalidArgumentsException;
+	using InvalidSortArgumentException = JsonException::InvalidSortArgumentException;
+	using OpenFileException = JsonException::OpenFileException;
+}
