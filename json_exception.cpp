@@ -16,13 +16,13 @@
 #include <string>
 
 class JsonLog{
-public:
+private:
 	std::ofstream error_log;
 	char* error_txt;
 
 	time_t now;
 	tm *ltm;
-
+public:
 	JsonLog(){
 		now = time(0);
 		ltm = localtime(&now);
